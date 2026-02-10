@@ -605,6 +605,18 @@ body::after {
   margin-top: 40px;
 }
 
+.week-date {
+  font-family: 'Unbounded', cursive;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: -4px;
+  margin-top: 8px;
+  padding-left: 24px;
+}
+
 .week-card {
   background: var(--gray-card);
   border: 1px solid rgba(255,255,255,0.06);
@@ -664,6 +676,47 @@ body::after {
   font-weight: 600;
   color: var(--green);
 }
+
+/* Bonus card — нулевая неделя */
+.week-card--bonus {
+  border: 1px solid rgba(0, 230, 118, 0.25);
+  background: linear-gradient(135deg, rgba(0, 230, 118, 0.06) 0%, var(--gray-card) 60%);
+  position: relative;
+  overflow: visible;
+}
+
+.week-card--bonus .week-card__num {
+  color: var(--green);
+}
+
+.week-card--bonus .week-card__list li::before {
+  background: var(--green);
+}
+
+.week-card--bonus__emoji {
+  position: absolute;
+  top: -16px;
+  right: 18px;
+  font-size: 32px;
+  line-height: 1;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6));
+  z-index: 2;
+}
+
+.week-card__badge {
+  display: inline-block;
+  font-family: 'Unbounded', cursive;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--black);
+  background: var(--green);
+  padding: 5px 12px;
+  border-radius: 100px;
+  margin-bottom: 14px;
+}
+
 
 /* ═══════════════════════════════════════
    FORMAT
@@ -1534,11 +1587,13 @@ body::after {
 <section class="program section-pad">
   <div class="container">
     <div class="section-label reveal">Программа</div>
-    <h2 class="section-title reveal">3 недели —<br>от нуля до <span class="accent">системы</span></h2>
+    <h2 class="section-title reveal">Нулевая + 3 недели —<br>от нуля до <span class="accent">системы</span></h2>
     <div class="program__weeks stagger">
-      <div class="week-card">
-        <div class="week-card__num">Неделя 1</div>
-        <div class="week-card__title">Старт + первый видос</div>
+      <div class="week-card week-card--bonus">
+        <div class="week-card--bonus__emoji">🫂🎁</div>
+        <div class="week-card__badge">Доступ сразу после оплаты</div>
+        <div class="week-card__num">Нулевая неделя</div>
+        <div class="week-card__title">Вкатываемся</div>
         <ul class="week-card__list">
           <li>Как работают алгоритмы Instagram и TikTok</li>
           <li>Находим твою аудиторию и тему</li>
@@ -1547,20 +1602,34 @@ body::after {
         </ul>
         <div class="week-card__result">Результат: аккаунт создан, первый видос выложен</div>
       </div>
+      <div class="week-date">18 февраля</div>
+      <div class="week-card">
+        <div class="week-card__num">Неделя 1</div>
+        <div class="week-card__title">Охватные видео + производство контента</div>
+        <ul class="week-card__list">
+          <li>Как делать видосы, которые залетают в рекомендации</li>
+          <li>Практики и приёмы, которые цепляют с первой секунды</li>
+          <li>Пайплайн производства контента с ИИ</li>
+          <li>Увеличиваем насмотренность — поиск референсов</li>
+        </ul>
+        <div class="week-card__result">Результат: партия видосов выложена, понимание как набирать охваты</div>
+      </div>
+      <div class="week-date">25 февраля</div>
       <div class="week-card">
         <div class="week-card__num">Неделя 2</div>
         <div class="week-card__title">Контент, который приносит деньги</div>
         <ul class="week-card__list">
-          <li>Видео на просмотры — как попасть в рекомендации</li>
           <li>Видео на продажи — как встроить продукт нативно</li>
-          <li>Как цеплять с первой секунды</li>
+          <li>Воронки в Instagram — типы и инструменты</li>
           <li>Как переводить зрителей в покупателей</li>
+          <li>Конвертирующие видео с продакт-плейсментом</li>
         </ul>
-        <div class="week-card__result">Результат: партия видосов + понимание как зарабатывать на просмотрах</div>
+        <div class="week-card__result">Результат: понимание как превращать просмотры в лиды и деньги</div>
       </div>
+      <div class="week-date">4 марта</div>
       <div class="week-card">
         <div class="week-card__num">Неделя 3</div>
-        <div class="week-card__title">Разбор + докрутка</div>
+        <div class="week-card__title">Обратная связь + практика</div>
         <ul class="week-card__list">
           <li>Разбираем результаты каждого участника</li>
           <li>Что работает, что нет — конкретные правки</li>
