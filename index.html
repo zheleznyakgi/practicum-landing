@@ -1002,6 +1002,29 @@ body::after {
   position: relative;
 }
 
+.pricing__card--birthday {
+  border-color: rgba(255,150,0,0.4);
+}
+
+.pricing__card--birthday .pricing__tag {
+  background: linear-gradient(135deg, #ff3c00, #ff9600);
+}
+
+.pricing__birthday-reason {
+  font-size: 14px;
+  color: var(--gray);
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.pricing__birthday-deadline {
+  font-weight: 700;
+  color: var(--white);
+  font-size: 15px;
+  margin-bottom: 24px;
+  position: relative;
+}
+
 .pricing__timer {
   display: flex;
   justify-content: center;
@@ -1602,7 +1625,7 @@ body::after {
         </ul>
         <div class="week-card__result">Результат: аккаунт создан, первый видос выложен</div>
       </div>
-      <div class="week-date">18 февраля</div>
+      <div class="week-date">18 марта</div>
       <div class="week-card">
         <div class="week-card__num">Неделя 1</div>
         <div class="week-card__title">Охватные видео + производство контента</div>
@@ -1614,7 +1637,7 @@ body::after {
         </ul>
         <div class="week-card__result">Результат: партия видосов выложена, понимание как набирать охваты</div>
       </div>
-      <div class="week-date">25 февраля</div>
+      <div class="week-date">25 марта</div>
       <div class="week-card">
         <div class="week-card__num">Неделя 2</div>
         <div class="week-card__title">Контент, который приносит деньги</div>
@@ -1626,7 +1649,7 @@ body::after {
         </ul>
         <div class="week-card__result">Результат: понимание как превращать просмотры в лиды и деньги</div>
       </div>
-      <div class="week-date">4 марта</div>
+      <div class="week-date">1 апреля</div>
       <div class="week-card">
         <div class="week-card__num">Неделя 3</div>
         <div class="week-card__title">Обратная связь + практика</div>
@@ -1799,15 +1822,16 @@ body::after {
 <section class="pricing" id="pricing">
   <div class="container">
     <div class="section-label reveal" style="text-align: center;">Стоимость</div>
-    <div class="pricing__card reveal">
-      <div class="pricing__tag">Early Bird</div>
+    <div class="pricing__card reveal" id="pricingCard">
+      <div class="pricing__tag" id="pricingTag">Early Bird</div>
       <div class="pricing__future">
         <div class="pricing__future-label">Цена после повышения</div>
         <div class="pricing__future-price">24 900₽</div>
       </div>
       <div class="pricing__now-label">Твоя цена сейчас</div>
       <div class="pricing__price">19 900<span class="pricing__currency">₽</span></div>
-      <div class="pricing__save">−5 000₽ экономия</div>
+      <div class="pricing__save" id="pricingSave">−5 000₽ экономия</div>
+      <div class="pricing__birthday-deadline" id="birthdayDeadline" style="display:none"></div>
       <div class="pricing__timer-label" id="timerLabel">До повышения цены</div>
       <div class="pricing__timer" id="pricingTimer">
         <div class="pricing__timer-block">
@@ -1929,7 +1953,87 @@ function updateSticky() {
 heroObs.observe(heroSection);
 pricingObs.observe(pricingSection);
 
+// Общая функция отображения таймера (используется и промо, и evergreen)
+function displayTimer(diff) {
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const secs = Math.floor((diff % (1000 * 60)) / 1000);
+  document.getElementById('timerDays').textContent = String(days).padStart(2, '0');
+  document.getElementById('timerHours').textContent = String(hours).padStart(2, '0');
+  document.getElementById('timerMins').textContent = String(mins).padStart(2, '0');
+  document.getElementById('timerSecs').textContent = String(secs).padStart(2, '0');
+}
+
+// Промо-акция: день рождения 7 марта 2026
+// 5 марта — 14 900₽, 6 марта — 17 900₽, с 7 марта — обычная логика
+const BIRTHDAY_PROMO = {
+  '2026-03-05': { price: '14 900', savings: '10 000', label: '5 марта', deadlineUTC: '2026-03-05T21:00:00Z' },
+  '2026-03-06': { price: '17 900', savings: '7 000', label: '6 марта', deadlineUTC: '2026-03-06T21:00:00Z' },
+};
+
+(function checkBirthdayPromo() {
+  // Дата по Москве (UTC+3)
+  const now = new Date();
+  const msk = new Date(now.getTime() + 3 * 60 * 60 * 1000);
+  const todayKey = msk.toISOString().slice(0, 10);
+  const promo = BIRTHDAY_PROMO[todayKey];
+
+  if (!promo) return;
+
+  const card = document.getElementById('pricingCard');
+
+  // Добавляем класс для стилизации карточки
+  card.classList.add('pricing__card--birthday');
+
+  // Тег: 🎂 Скидка в честь моего ДР
+  document.getElementById('pricingTag').textContent = '🎂 Скидка в честь моего ДР';
+
+  // Пояснение под тегом
+  const reason = document.createElement('div');
+  reason.className = 'pricing__birthday-reason';
+  reason.textContent = 'У меня день рождения 7 марта — хочу подарить скидку на практикум';
+  document.getElementById('pricingTag').after(reason);
+
+  // Лейбл "Твоя цена сейчас"
+  document.querySelector('.pricing__now-label').textContent = 'Цена сегодня';
+
+  // Цена
+  document.querySelector('.pricing__price').innerHTML = promo.price + '<span class="pricing__currency">₽</span>';
+
+  // Выгода
+  document.getElementById('pricingSave').textContent = '−' + promo.savings + '₽ выгода';
+
+  // Дедлайн жирным
+  const deadlineEl = document.getElementById('birthdayDeadline');
+  deadlineEl.innerHTML = '<b>Действует только ' + promo.label + '</b>';
+  deadlineEl.style.display = 'block';
+
+  // Таймер до конца текущего дня промо (полночь МСК = 21:00 UTC предыдущего дня)
+  document.getElementById('timerLabel').textContent = 'До повышения цены';
+  document.getElementById('secondChance').style.display = 'none';
+
+  const promoDeadline = new Date(promo.deadlineUTC).getTime();
+
+  function updatePromoTimer() {
+    const diff = promoDeadline - Date.now();
+    if (diff <= 0) {
+      displayTimer(0);
+      return;
+    }
+    displayTimer(diff);
+  }
+
+  updatePromoTimer();
+  setInterval(updatePromoTimer, 1000);
+
+  // Не запускаем обычный таймер
+  window.__birthdayPromoActive = true;
+})();
+
 // Evergreen countdown timer — 3 дня с первого визита, потом "второй шанс" на 1 день
+// Не запускается если активна промо-акция
+if (window.__birthdayPromoActive) { /* skip */ } else {
 const TIMER_DAYS = 3;
 const EXTEND_DAYS = 1;
 const STORAGE_KEY = 'practicum_first_visit';
@@ -1954,11 +2058,7 @@ function updateTimer() {
   const diff = deadline - Date.now();
 
   if (diff <= 0) {
-    document.getElementById('timerDays').textContent = '00';
-    document.getElementById('timerHours').textContent = '00';
-    document.getElementById('timerMins').textContent = '00';
-    document.getElementById('timerSecs').textContent = '00';
-
+    displayTimer(0);
     if (!extended) {
       // Первый таймер истёк — показываем «второй шанс»
       document.getElementById('pricingTimer').style.display = 'none';
@@ -1968,15 +2068,7 @@ function updateTimer() {
     return;
   }
 
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-  document.getElementById('timerDays').textContent = String(days).padStart(2, '0');
-  document.getElementById('timerHours').textContent = String(hours).padStart(2, '0');
-  document.getElementById('timerMins').textContent = String(mins).padStart(2, '0');
-  document.getElementById('timerSecs').textContent = String(secs).padStart(2, '0');
+  displayTimer(diff);
 }
 
 // «Получить скидку» — перезапуск на 1 день
@@ -1999,6 +2091,7 @@ if (extended) {
 
 updateTimer();
 setInterval(updateTimer, 1000);
+} // конец if (!birthdayPromoActive)
 
 // Smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(a => {
