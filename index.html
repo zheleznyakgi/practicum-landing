@@ -1162,24 +1162,45 @@ body::after {
   margin: 0 auto;
 }
 
+.pricing__tabs {
+  display: none;
+}
+
 @media (max-width: 600px) {
-  .pricing__grid {
+  .pricing__tabs {
     display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    gap: 12px;
-    padding: 0 16px;
-    margin: 0 -16px;
-    scrollbar-width: none;
+    gap: 8px;
+    margin-bottom: 16px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
   }
-  .pricing__grid::-webkit-scrollbar {
-    display: none;
+  .pricing__tab {
+    flex: 1;
+    padding: 12px 8px;
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--gray);
+    font-family: 'Unbounded', cursive;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pricing__tab--active {
+    border-color: var(--accent);
+    color: var(--white);
+    background: rgba(255,60,0,0.1);
+  }
+  .pricing__grid {
+    display: block;
   }
   .pricing__grid .pricing__card {
-    min-width: 80vw;
-    scroll-snap-align: center;
-    flex-shrink: 0;
+    display: none;
+  }
+  .pricing__grid .pricing__card--visible {
+    display: block;
   }
 }
 
@@ -1197,9 +1218,7 @@ body::after {
 }
 
 .pricing__card-badge {
-  position: absolute;
-  top: -12px;
-  right: 20px;
+  display: inline-block;
   font-family: 'Unbounded', cursive;
   font-size: 10px;
   font-weight: 700;
@@ -1209,6 +1228,7 @@ body::after {
   border-radius: 100px;
   background: var(--accent);
   color: var(--white);
+  margin-bottom: 12px;
 }
 
 /* ═══════════════════════════════════════
@@ -1938,6 +1958,12 @@ body::after {
       </div>
     </div>
 
+    <!-- Табы (только мобилка) -->
+    <div class="pricing__tabs" id="pricingTabs">
+      <button class="pricing__tab pricing__tab--active" data-tab="base">📹 Видео</button>
+      <button class="pricing__tab" data-tab="premium">🤝 Консультация</button>
+    </div>
+
     <!-- Две карточки тарифов -->
     <div class="pricing__grid stagger">
       <!-- Тариф 1: Видео -->
@@ -2165,6 +2191,41 @@ if (extended) {
 
 updateTimer();
 setInterval(updateTimer, 1000);
+
+// Табы тарифов (мобилка)
+(function() {
+  const tabs = document.querySelectorAll('.pricing__tab');
+  const baseCard = document.getElementById('pricingCardBase');
+  const premiumCard = document.getElementById('pricingCardPremium');
+
+  // Показываем первый тариф по умолчанию на мобилке
+  function applyTabs() {
+    if (window.innerWidth <= 600) {
+      const active = document.querySelector('.pricing__tab--active');
+      if (active && active.dataset.tab === 'premium') {
+        baseCard.classList.remove('pricing__card--visible');
+        premiumCard.classList.add('pricing__card--visible');
+      } else {
+        baseCard.classList.add('pricing__card--visible');
+        premiumCard.classList.remove('pricing__card--visible');
+      }
+    } else {
+      baseCard.classList.remove('pricing__card--visible');
+      premiumCard.classList.remove('pricing__card--visible');
+    }
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      tabs.forEach(t => t.classList.remove('pricing__tab--active'));
+      this.classList.add('pricing__tab--active');
+      applyTabs();
+    });
+  });
+
+  applyTabs();
+  window.addEventListener('resize', applyTabs);
+})();
 
 // Smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(a => {
