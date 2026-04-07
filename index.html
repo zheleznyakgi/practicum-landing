@@ -1164,8 +1164,22 @@ body::after {
 
 @media (max-width: 600px) {
   .pricing__grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 12px;
+    padding: 0 16px;
+    margin: 0 -16px;
+    scrollbar-width: none;
+  }
+  .pricing__grid::-webkit-scrollbar {
+    display: none;
+  }
+  .pricing__grid .pricing__card {
+    min-width: 80vw;
+    scroll-snap-align: center;
+    flex-shrink: 0;
   }
 }
 
